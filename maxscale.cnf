@@ -24,7 +24,7 @@ type=monitor
 module=mariadbmon
 servers=server1,server2
 user=maxscale_mon
-password=monitor_pass
+password=cH4JtWmDX7P
 monitor_interval=2000ms
 auto_failover=true
 auto_rejoin=true
@@ -38,7 +38,7 @@ type=service
 router=readwritesplit
 servers=server1,server2
 user=maxscale_user
-password=service_pass
+password=cH4JtWmDX7P
 
 [Read-Write-Listener]
 type=listener

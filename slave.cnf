@@ -2,4 +2,3 @@
 server_id=2
 relay_log=/var/lib/mysql/relay-bin
 gtid_strict_mode=1
-enforce_gtid_consistency=1
