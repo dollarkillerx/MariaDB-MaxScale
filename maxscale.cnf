@@ -1,0 +1,47 @@
+[maxscale]
+threads=auto
+
+# ----------------------
+# 后端数据库节点
+# ----------------------
+[server1]
+type=server
+address=103.219.192.202   # ServerA IP
+port=5306
+protocol=MariaDBBackend
+
+[server2]
+type=server
+address=103.219.195.40   # ServerB IP
+port=5306
+protocol=MariaDBBackend
+
+# ----------------------
+# 监控模块
+# ----------------------
+[MariaDB-Monitor]
+type=monitor
+module=mariadbmon
+servers=server1,server2
+user=maxscale_mon
+password=monitor_pass
+monitor_interval=2000ms
+auto_failover=true
+auto_rejoin=true
+enforce_read_only_slaves=true
+
+# ----------------------
+# 服务和路由
+# ----------------------
+[Read-Write-Service]
+type=service
+router=readwritesplit
+servers=server1,server2
+user=maxscale_user
+password=service_pass
+
+[Read-Write-Listener]
+type=listener
+service=Read-Write-Service
+protocol=MariaDBClient
+port=4006

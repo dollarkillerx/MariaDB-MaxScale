@@ -1,0 +1,15 @@
+services:
+  mariadb:
+    image: mariadb:12.0.2-noble
+    container_name: mariadb-slave
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: zkim2bPKQW5
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: pacman
+      MYSQL_PASSWORD: zkim2bPKQW5
+    ports:
+      - "5306:3306"
+    volumes:
+      - ./slave_data:/var/lib/mysql
+      - ./slave.cnf:/etc/mysql/conf.d/slave.cnf

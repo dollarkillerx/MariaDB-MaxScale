@@ -1,0 +1,10 @@
+services:
+  maxscale:
+    image: mariadb/maxscale:24.02.7-ubi
+    container_name: maxscale
+    restart: always
+    ports:
+      - "4006:4006"
+      - "8989:8989"   # web管理端口
+    volumes:
+      - ./maxscale.cnf:/etc/maxscale.cnf
