@@ -19,12 +19,12 @@ services:
     container_name: mariadb-master
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_ROOT_PASSWORD: zkim2bPKQW5
       MYSQL_DATABASE: testdb
-      MYSQL_USER: repl
-      MYSQL_PASSWORD: replpass
+      MYSQL_USER: pacman
+      MYSQL_PASSWORD: zkim2bPKQW5
     ports:
-      - "3306:3306"
+      - "5306:3306"
     volumes:
       - ./master_data:/var/lib/mysql
       - ./master.cnf:/etc/mysql/conf.d/master.cnf
@@ -38,6 +38,7 @@ server_id=1
 log_bin=/var/lib/mysql/mysql-bin
 binlog_format=row
 gtid_strict_mode=1
+slave-skip-errors=1396 # 跳过 同名用户错误
 ```
 
 ---
@@ -51,12 +52,12 @@ services:
     container_name: mariadb-slave
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_ROOT_PASSWORD: zkim2bPKQW5
       MYSQL_DATABASE: testdb
-      MYSQL_USER: repl
-      MYSQL_PASSWORD: replpass
+      MYSQL_USER: pacman
+      MYSQL_PASSWORD: zkim2bPKQW5
     ports:
-      - "3306:3306"
+      - "5306:3306"
     volumes:
       - ./slave_data:/var/lib/mysql
       - ./slave.cnf:/etc/mysql/conf.d/slave.cnf
@@ -69,6 +70,7 @@ services:
 server_id=2
 relay_log=/var/lib/mysql/relay-bin
 gtid_strict_mode=1
+slave-skip-errors=1396 # 跳过 同名用户错误
 ```
 
 ---
@@ -99,20 +101,21 @@ services:
 ```ini
 [maxscale]
 threads=auto
-
+# 测试环境可以
+admin_secure_gui=false
 # ----------------------
 # 后端数据库节点
 # ----------------------
 [server1]
 type=server
-address=192.168.0.101   # ServerA IP
-port=3306
+address=103.219.192.202   
+port=5306
 protocol=MariaDBBackend
 
 [server2]
 type=server
-address=192.168.0.102   # ServerB IP
-port=3306
+address=103.219.195.40   
+port=5306
 protocol=MariaDBBackend
 
 # ----------------------
@@ -123,10 +126,11 @@ type=monitor
 module=mariadbmon
 servers=server1,server2
 user=maxscale_mon
-password=monitor_pass
+password=cH4JtWmDX7P
 monitor_interval=2000ms
 auto_failover=true
 auto_rejoin=true
+enforce_read_only_slaves=true
 
 # ----------------------
 # 服务和路由
@@ -136,7 +140,7 @@ type=service
 router=readwritesplit
 servers=server1,server2
 user=maxscale_user
-password=service_pass
+password=cH4JtWmDX7P
 
 [Read-Write-Listener]
 type=listener
