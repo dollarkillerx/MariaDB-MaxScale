@@ -1,5 +1,10 @@
 [mysqld]
 server_id=2
 relay_log=/var/lib/mysql/relay-bin
-gtid_strict_mode=1
-slave-skip-errors=1396
+log_bin=/var/lib/mysql/mysql-bin
+binlog_format=ROW
+
+# GTID
+gtid_domain_id=1
+gtid_strict_mode=ON
+log_slave_updates=ON
