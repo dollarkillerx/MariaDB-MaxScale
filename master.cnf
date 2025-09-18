@@ -7,3 +7,5 @@ binlog_format=ROW
 gtid_domain_id=1
 gtid_strict_mode=ON
 log_slave_updates=ON
+
+slave-skip-errors=1396 # 跳过 同名用户错误
