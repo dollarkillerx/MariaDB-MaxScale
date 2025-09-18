@@ -3,3 +3,4 @@ server_id=1
 log_bin=/var/lib/mysql/mysql-bin
 binlog_format=row
 gtid_strict_mode=1
+slave-skip-errors=1396
