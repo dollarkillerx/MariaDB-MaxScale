@@ -1,27 +1,15 @@
--- 1. 监控用户 (MaxScale-Monitor 用)
-CREATE USER IF NOT EXISTS 'maxscale_mon'@'%' IDENTIFIED BY 'cH4JtWmDX7P';
-GRANT REPLICA MONITOR ON *.* TO 'maxscale_mon'@'%';
-GRANT READ_ONLY ADMIN ON *.* TO 'maxscale_mon'@'%';
-GRANT BINLOG ADMIN ON *.* TO 'maxscale_mon'@'%';
-GRANT CONNECTION ADMIN ON *.* TO 'maxscale_mon'@'%';
-GRANT RELOAD ON *.* TO 'maxscale_mon'@'%';
-GRANT PROCESS ON *.* TO 'maxscale_mon'@'%';
-GRANT SHOW DATABASES ON *.* TO 'maxscale_mon'@'%';
-GRANT EVENT ON *.* TO 'maxscale_mon'@'%';
-GRANT SELECT ON mysql.user TO 'maxscale_mon'@'%';
-GRANT SELECT ON mysql.global_priv TO 'maxscale_mon'@'%';
+
+GRANT REPLICATION SLAVE, REPLICATION CLIENT, REPLICATION SLAVE ADMIN, SUPER, RELOAD 
+ON *.* TO 'maxscale_user'@'%' IDENTIFIED BY 'cH4JtWmDX7P';
 
 
--- 2. 代理服务用户 (MaxScale Proxy 用)
-CREATE USER IF NOT EXISTS 'maxscale_user'@'%' IDENTIFIED BY 'cH4JtWmDX7P';
-GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER
-    ON *.* TO 'maxscale_user'@'%';
-
-
--- 3. 主从复制用户 (Replication 用)
-GRANT REPLICATION SLAVE, REPLICATION CLIENT, SUPER, RELOAD 
+GRANT REPLICATION SLAVE, REPLICATION CLIENT, REPLICATION SLAVE ADMIN, SUPER, RELOAD 
 ON *.* TO 'repl'@'%' IDENTIFIED BY 'cH4JtWmDX7P';
-FLUSH PRIVILEGES;
+
+
+GRANT REPLICATION SLAVE, REPLICATION CLIENT, REPLICATION SLAVE ADMIN, SUPER, RELOAD
+ON *.* TO 'maxscale_mon'@'%' IDENTIFIED BY 'cH4JtWmDX7P';
+
 
 -- 刷新权限
 FLUSH PRIVILEGES;
