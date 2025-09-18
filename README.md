@@ -36,8 +36,13 @@ services:
 [mysqld]
 server_id=1
 log_bin=/var/lib/mysql/mysql-bin
-binlog_format=row
-gtid_strict_mode=1
+binlog_format=ROW
+
+# GTID
+gtid_domain_id=1
+gtid_strict_mode=ON
+log_slave_updates=ON
+
 slave-skip-errors=1396 # 跳过 同名用户错误
 ```
 
@@ -69,7 +74,13 @@ services:
 [mysqld]
 server_id=2
 relay_log=/var/lib/mysql/relay-bin
-gtid_strict_mode=1
+log_bin=/var/lib/mysql/mysql-bin
+binlog_format=ROW
+
+# GTID
+gtid_domain_id=2
+gtid_strict_mode=ON
+log_slave_updates=ON
 slave-skip-errors=1396 # 跳过 同名用户错误
 ```
 
@@ -95,6 +106,12 @@ services:
 ---
 
 ## 三、MaxScale 配置
+
+maxscale_mon
+
+maxscale_user
+
+修改为root 最快
 
 `maxscale.cnf`：
 
@@ -154,29 +171,17 @@ port=4006
 ## 四、准备数据库用户（在任意 MariaDB 节点执行）
 
 ```sql
--- 1. 监控用户 (MaxScale-Monitor 用)
-CREATE USER IF NOT EXISTS 'maxscale_mon'@'%' IDENTIFIED BY 'cH4JtWmDX7P';
-GRANT REPLICA MONITOR ON *.* TO 'maxscale_mon'@'%';
-GRANT READ_ONLY ADMIN ON *.* TO 'maxscale_mon'@'%';
-GRANT BINLOG ADMIN ON *.* TO 'maxscale_mon'@'%';
-GRANT CONNECTION ADMIN ON *.* TO 'maxscale_mon'@'%';
-GRANT RELOAD ON *.* TO 'maxscale_mon'@'%';
-GRANT PROCESS ON *.* TO 'maxscale_mon'@'%';
-GRANT SHOW DATABASES ON *.* TO 'maxscale_mon'@'%';
-GRANT EVENT ON *.* TO 'maxscale_mon'@'%';
-GRANT SELECT ON mysql.user TO 'maxscale_mon'@'%';
-GRANT SELECT ON mysql.global_priv TO 'maxscale_mon'@'%';
+
+GRANT REPLICATION SLAVE, REPLICATION CLIENT, REPLICATION SLAVE ADMIN, SUPER, RELOAD 
+ON *.* TO 'maxscale_user'@'%' IDENTIFIED BY 'cH4JtWmDX7P';
 
 
--- 2. 代理服务用户 (MaxScale Proxy 用)
-CREATE USER IF NOT EXISTS 'maxscale_user'@'%' IDENTIFIED BY 'cH4JtWmDX7P';
-GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER
-    ON *.* TO 'maxscale_user'@'%';
+GRANT REPLICATION SLAVE, REPLICATION CLIENT, REPLICATION SLAVE ADMIN, SUPER, RELOAD 
+ON *.* TO 'repl'@'%' IDENTIFIED BY 'cH4JtWmDX7P';
 
 
--- 3. 主从复制用户 (Replication 用)
-CREATE USER IF NOT EXISTS 'repl'@'%' IDENTIFIED BY 'cH4JtWmDX7P';
-GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';
+GRANT REPLICATION SLAVE, REPLICATION CLIENT, REPLICATION SLAVE ADMIN, SUPER, RELOAD
+ON *.* TO 'maxscale_mon'@'%' IDENTIFIED BY 'cH4JtWmDX7P';
 
 -- 刷新权限
 FLUSH PRIVILEGES;
