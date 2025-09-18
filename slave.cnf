@@ -5,6 +5,7 @@ log_bin=/var/lib/mysql/mysql-bin
 binlog_format=ROW
 
 # GTID
-gtid_domain_id=1
+gtid_domain_id=2
 gtid_strict_mode=ON
 log_slave_updates=ON
+slave-skip-errors=1396 # 跳过 同名用户错误
