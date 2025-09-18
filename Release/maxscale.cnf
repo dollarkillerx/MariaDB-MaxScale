@@ -1,0 +1,51 @@
+[maxscale]
+threads=auto
+admin_secure_gui=false
+admin_host=0.0.0.0
+admin_port=9989
+# ----------------------
+# 后端数据库节点
+# ----------------------
+[server1]
+type=server
+address=1.1.1.1
+port=5306
+protocol=MariaDBBackend
+
+[server2]
+type=server
+address=2.2.2.2
+port=5306
+protocol=MariaDBBackend
+
+# ----------------------
+# 监控模块
+# ----------------------
+[MariaDB-Monitor]
+type=monitor
+module=mariadbmon
+servers=server1,server2
+user=root
+password=zkim2bPKQW5
+monitor_interval=2000ms
+auto_failover=true
+auto_rejoin=true
+enforce_read_only_slaves=true
+enforce_simple_topology=on
+master_failure_timeout=5s
+
+# ----------------------
+# 服务和路由
+# ----------------------
+[Read-Write-Service]
+type=service
+router=readwritesplit
+servers=server1,server2
+user=root
+password=zkim2bPKQW5
+
+[Read-Write-Listener]
+type=listener
+service=Read-Write-Service
+protocol=MariaDBClient
+port=4006

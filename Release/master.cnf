@@ -1,0 +1,35 @@
+[mysqld]
+# 基本配置
+server_id = 1
+log_bin = /var/lib/mysql/mysql-bin
+binlog_format = ROW
+
+# GTID 复制配置
+gtid_domain_id = 1
+gtid_strict_mode = ON
+gtid_ignore_duplicates = ON
+# 从库写入 binlog，支持级联复制
+log_slave_updates = ON
+# 跳过同名用户错误
+slave-skip-errors = 1396
+
+# 半同步复制
+rpl_semi_sync_master_enabled = 1
+rpl_semi_sync_master_wait_point = AFTER_SYNC
+# 1秒，超时回退异步
+rpl_semi_sync_master_timeout = 1000
+# 半同步从库
+rpl_semi_sync_slave_enabled = 1
+
+# 字符集
+character_set_server = utf8mb4
+collation_server = utf8mb4_unicode_ci
+
+# 日志
+log_error = /var/log/mysql/error.log
+slow_query_log = 1
+slow_query_log_file = /var/log/mysql/slow.log
+long_query_time = 2
+
+[client]
+default_character_set = utf8mb4
