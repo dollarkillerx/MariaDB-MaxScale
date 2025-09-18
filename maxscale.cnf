@@ -1,18 +1,19 @@
 [maxscale]
 threads=auto
-
+# 测试环境可以
+admin_secure_gui=false
 # ----------------------
 # 后端数据库节点
 # ----------------------
 [server1]
 type=server
-address=103.219.192.202   # ServerA IP
+address=103.219.192.202   
 port=5306
 protocol=MariaDBBackend
 
 [server2]
 type=server
-address=103.219.195.40   # ServerB IP
+address=103.219.195.40   
 port=5306
 protocol=MariaDBBackend
 
